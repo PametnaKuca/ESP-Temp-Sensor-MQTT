@@ -7,11 +7,14 @@ load('api_sys.js');
 load('api_timer.js');
 load('api_dht.js');
 
+//Here you can find device ID which can be changed
+let deviceIDCustom ='01';
+
 let led = Cfg.get('pins.led');
 let button = Cfg.get('pins.button');
 let topic = '/devices/' + Cfg.get('device.id') + '/events';
-let topicTemp ='home/temperature';
-let topicHum ='home/humidity';
+let topicTemp ='home/device' + deviceIDCustom +'/temperature';
+let topicHum ='home/device' + deviceIDCustom +'/humidity';
 
 print('LED GPIO:', led, 'button GPIO:', button);
 
@@ -43,7 +46,7 @@ Timer.set(1000 /* 1 sec */, Timer.REPEAT, function() {
     let messageTemp = JSON.stringify(mydht.getTemp());
     let okTemp = MQTT.pub(topicTemp, messageTemp);
     print('Published:', okTemp, topicTemp, '->', messageTemp);
-    
+
     print('Humidity   :', mydht.getHumidity(),' %');
     let messageHum = JSON.stringify(mydht.getHumidity());
     let okHum = MQTT.pub(topicHum, messageHum);
@@ -67,7 +70,7 @@ Timer.set(1000 /* 1 sec */, Timer.REPEAT, function() {
 // Publish to MQTT topic on a button press. Button is wired to GPIO pin 0
 GPIO.set_button_handler(button, GPIO.PULL_UP, GPIO.INT_EDGE_NEG, 200, function() {
   let message = getInfo();
-  let ok = MQTT.pub(topic, message, 1);
+  let ok = MQTT.pub(topic, message);
   print('Published:', ok, topic, '->', message);
 }, null);
 
