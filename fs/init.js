@@ -37,12 +37,10 @@ let getInfo = function() {
 
 // Blink built-in LED every second
 GPIO.set_mode(led, GPIO.MODE_OUTPUT);
-Timer.set(1000 /* 1 sec */, Timer.REPEAT, function() {
+Timer.set(5000 /* 5 sec */, Timer.REPEAT, function() {
   let value = GPIO.toggle(led);
   print(value ? 'Tick' : 'Tock', 'uptime:', Sys.uptime(), getInfo());
-  if(mydht !== null)
   {
-    print('Temperature:', mydht.getTemp(),'oC');
     let messageTemp = JSON.stringify(mydht.getTemp());
     let okTemp = MQTT.pub(topicTemp, messageTemp);
     print('Published:', okTemp, topicTemp, '->', messageTemp);
